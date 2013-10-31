@@ -13,8 +13,8 @@
 # -------------------------------------------------------------------
 
 
-LPSOLVE_DIR=../../lp_solve_5.5
-JDK_DIR=/Library/Java/JavaVirtualMachines/jdk1.7.0_21.jdk/Contents/Home/
+LPSOLVE_DIR=~/Downloads/lp_solve_5.5
+JDK_DIR=/usr/lib/jvm/jdk1.7.0/
 #JDK_DIR=/usr/lib/jvm/java-6-sun-1.6.0.10
 
 c=g++
@@ -25,7 +25,7 @@ echo '#include <stdlib.h>'>>/tmp/platform.c
 echo '#include <stdio.h>'>>/tmp/platform.c
 echo 'int main(){printf("ux%d", (int) (sizeof(void *)*8));}'>>/tmp/platform.c
 $c /tmp/platform.c -o /tmp/platform
-PLATFORM="osx64"
+PLATFORM="ux64"
 rm /tmp/platform /tmp/platform.c >/dev/null 2>&1
 
 mkdir $PLATFORM >/dev/null 2>&1
@@ -34,12 +34,13 @@ echo $PLATFORM
 
 # OK, here we go!
 
-SRC_DIR=../src/c
-INCL="-I $JDK_DIR/include -I $JDK_DIR/include/linux -I $LPSOLVE_DIR -I $SRC_DIR -I $JDK_DIR/include/darwin "
+SRC_DIR=../src/main/c
+INCL="-I $JDK_DIR/include -I $JDK_DIR/include/linux -I $LPSOLVE_DIR -I $SRC_DIR -I $JDK_DIR/include/linux "
 
+echo $PLATFORM
 $c -fpic $INCL -c $SRC_DIR/lpsolve5j.cpp
-#$c -shared -Wl,-soname,liblpsolve55j.so -o $PLATFORM/liblpsolve55j.so lpsolve5j.o -L../../../lpsolve55/bin/$PLATFORM -lc -llpsolve55
+$c -fpic -shared -Wl,-soname,liblpsolve55j.so -o $PLATFORM/liblpsolve55j.so lpsolve5j.o -L$LPSOLVE_DIR/lpsolve55/bin/$PLATFORM -lc -llpsolve55
 #$c -shared -Wl,-install_name,liblpsolve55j.dylib -o $PLATFORM/liblpsolve55j.dylib lpsolve5j.o -L$LPSOLVE_DIR/lpsolve55/bin/$PLATFORM -lc -llpsolve55
-libtool -static -o $PLATFORM/liblpsolve55j.a  *.o -L$LPSOLVE_DIR/lpsolve55/bin/$PLATFORM -llpsolve55
-$c -dynamiclib $PLATFORM/liblpsolve55j.a -compatibility_version 5.5.0 -current_version 5.5.0 -o $PLATFORM/liblpsolve55j.dylib lpsolve5j.o -lc 
+#libtool -static -o $PLATFORM/liblpsolve55j.a  *.o -L$LPSOLVE_DIR/lpsolve55/bin/$PLATFORM -llpsolve55
+#$c -dynamiclib $PLATFORM/liblpsolve55j.a -compatibility_version 5.5.0 -current_version 5.5.0 -o $PLATFORM/liblpsolve55j.dylib lpsolve5j.o -lc 
 
