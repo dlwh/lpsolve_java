@@ -272,7 +272,10 @@ public class LpSolve {
 	 * Static initializer to load the stub library
 	 */
 	static {
-		System.loadLibrary("lpsolve55j");
+    String jnilib = com.github.fommil.jni.JniNamer.getJniName("lpsolve55");
+    String natives = System.getProperty("lpsolve55", jnilib);
+    com.github.fommil.jni.JniLoader.load(natives.split(","));
+	//	System.loadLibrary("lpsolve55j");
 		init();
 	}
 
